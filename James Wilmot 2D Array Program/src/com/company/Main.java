@@ -7,11 +7,12 @@ import java.util.*;
 
 public class Main {
 
+    // Data
     static Seat seats[][] = new Seat[12][6];
     static Customer customerSeats[][] = new Customer[12][6];
-    static String dataTextFile;
 
-    public static String printSeats(Customer[][] seats) throws IOException {
+    // Returns customer placement as a string
+    public static String printCustomers(Customer[][] seats) throws IOException {
         String seatsText = "";
         seatsText += "        A B C   D E F\n";
         int rows = 1;
@@ -51,7 +52,8 @@ public class Main {
         return seatsText;
     }
 
-    private static void AllocateSeat(Customer customer) throws IOException {
+    // Adds customer
+    private static void AllocateCustomer(Customer customer) throws IOException {
         boolean customerAdded = false;
 
         int rowNumber = 0;
@@ -72,6 +74,9 @@ public class Main {
             rowNumber++;
         }
     }
+
+    // Initialises each seat within the seat array
+    // with the proper seat class and seat preference
 
     public static void initialiseSeats() throws IOException {
         String seatPref;
@@ -103,53 +108,10 @@ public class Main {
 
     }
 
-    public static String readBytes(String file, int position, int length) {
-        String record = null;
-        try {
-            RandomAccessFile fileStore = new RandomAccessFile(file, "r");
-            fileStore.seek(position);
-            byte[] bytes = new byte[length];
-            fileStore.read(bytes);
-            record = new String(bytes);
-            fileStore.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return record;
-    }
-
-    public static void writeToFile() throws IOException {
-        RandomAccessFile raf = new RandomAccessFile("seats.txt", "rw");
-        /*
-        dataTextFile = "";
-
-        int rowNumber = 0;
-        for (Customer[] c : customerSeats)
-        {
-            dataTextFile += "Row: " + (rowNumber + 1) + "\n";
-
-            int colNumber = 0;
-            for (Customer r: c)
-            {
-                if (r != null)
-                {
-                    dataTextFile += "Column: " + colNumber + r.getName() +
-                            r.getSeatClass() + r.getSeatPref() + r.isAdult() + "\n";
-                }
-                colNumber++;
-            }
-            rowNumber++;
-        }
-        */
-        raf.seek(10);
-        raf.writeUTF(printSeats(customerSeats));
-        raf.close();
-    }
-
+    // Main
     public static void main(String[] args) throws IOException {
-        // write your code here
         initialiseSeats();
-        System.out.println(printSeats(customerSeats));
+        System.out.println(printCustomers(customerSeats));
 
         boolean exit = false;
         while (!exit) {
@@ -160,6 +122,7 @@ public class Main {
             Scanner scannerIn = new Scanner(System.in);
             int choice = scannerIn.nextInt();
 
+            // Add customer
             if (choice == 1) {
                 boolean isAdult = true;
                 System.out.println("Please enter your name");
@@ -213,12 +176,12 @@ public class Main {
                 if (choice == 1) {
                     Seat newSeat = new Seat(customerClass, seatType);
                     Customer newCustomer = new Customer(name, isAdult, newSeat);
-                    AllocateSeat(newCustomer);
-                    System.out.println(printSeats(customerSeats));
-                    writeToFile();
+                    AllocateCustomer(newCustomer);
+                    System.out.println(printCustomers(customerSeats));
                 }
 
             }
+            // Delete customer
             else if (choice == 2)
             {
                 int rowToDelete;
@@ -233,8 +196,9 @@ public class Main {
                 columnToDelete = scannerIn.nextInt() - 1;
 
                 customerSeats[rowToDelete][columnToDelete] = null;
-                System.out.println(printSeats(customerSeats));
+                System.out.println(printCustomers(customerSeats));
             }
+            // Exit
             else if (choice == 3)
             {
                 exit = true;
